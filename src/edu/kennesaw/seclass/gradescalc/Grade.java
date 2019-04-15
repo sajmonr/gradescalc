@@ -2,25 +2,24 @@ package edu.kennesaw.seclass.gradescalc;
 
 public class Grade {
     private String _studentName;
-    private String _assignmentTitle;
+    private Assignment _assignment;
     private int _score;
 
     //Begin getters
     public String getStudentName(){
         return _studentName;
     }
-    public String getAssignmentTitle(){
-        return _assignmentTitle;
+    public Assignment getAssignment(){
+        return _assignment;
     }
     public int getScore(){
         return _score;
     }
     //End getters
 
-    public Grade(String studentName, String assignmentTitle, int score){
+    public Grade(String studentName, Assignment assignment, int score){
         _studentName = studentName;
-        _assignmentTitle = assignmentTitle;
+        _assignment = assignment;
         _score = score;
     }
-
 }

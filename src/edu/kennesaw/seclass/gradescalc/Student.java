@@ -1,20 +1,20 @@
 package edu.kennesaw.seclass.gradescalc;
 
 public class Student {
-
     private String _name;
-    private int _id;
+    private String _id;
     private String _email;
     private int _c;
     private int _cpp;
     private int _java;
-    private boolean _csJob;
+    private String _csJob;
+    private int _attendance;
 
     //Begin getters
     public String getName(){
         return _name;
     }
-    public int getId(){
+    public String getId(){
         return _id;
     }
     public String getEmail(){
@@ -29,12 +29,12 @@ public class Student {
     public int getJava(){
         return _java;
     }
-    public boolean getCsJob(){
+    public String getCsJob(){
         return _csJob;
     }
     //End getters
 
-    public Student(String name, int id, String email, int c, int cpp, int java, boolean csJob){
+    public Student(String name, String id, String email, int c, int cpp, int java, String csJob, int attendance){
         _name = name;
         _id = id;
         _email = email;
@@ -42,6 +42,10 @@ public class Student {
         _cpp = cpp;
         _java = java;
         _csJob = csJob;
+        _attendance = attendance;
     }
 
+    public int getAttendance(){
+        return _attendance;
+    }
 }
