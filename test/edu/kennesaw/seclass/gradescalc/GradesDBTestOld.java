@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GradesDBTest {
+public class GradesDBTestOld {
 
     GradesDB db = null;
     static final String GRADES_DB = "DB/GradesDatabase.xlsx";

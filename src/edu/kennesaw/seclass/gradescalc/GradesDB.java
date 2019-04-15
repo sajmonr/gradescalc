@@ -17,14 +17,15 @@ public class GradesDB {
     private HashSet<Student> _students;
 
 
-    public GradesDB(String dbFilePath) throws Exception{
+    public GradesDB(String dbFilePath){
 
         Workbook workbook;
         try{
             FileInputStream fis = new FileInputStream(dbFilePath);
             workbook = new XSSFWorkbook(fis);
         }catch(Exception e){
-            throw new Exception(String.format("Failed to open workbook '%s'.", dbFilePath), e);
+            System.out.println(String.format("Failed to open workbook '%s'.", dbFilePath));
+            return;
         }
 
         try{
@@ -33,7 +34,8 @@ public class GradesDB {
             _grades = readGradesDb(workbook);
             _students = readStudentsDb(workbook);
         }catch(Exception e){
-            throw new Exception(String.format("Failed to read data from workbook '%s'.", dbFilePath), e);
+            System.out.println(String.format("Failed to read data from workbook '%s'.", dbFilePath));
+            return;
         }
 
     }
@@ -46,6 +48,13 @@ public class GradesDB {
     }
     public int getNumProjects(){
         return _projects.size();
+    }
+
+    public void addAssignment(String assignmentName){
+        //!!!!!!!!THIS NEEDS TO BE IMPLEMENTED!!!!!!!!!!!
+    }
+    public void addGrade(){
+        //!!!!!!!!THIS NEEDS TO BE IMPLEMENTED!!!!!!!!!!!
     }
 
     public HashSet<Student> getStudents(){
