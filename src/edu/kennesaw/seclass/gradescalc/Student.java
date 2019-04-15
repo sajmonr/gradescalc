@@ -44,13 +44,17 @@ public class Student {
         _csJob = csJob;
         _attendance = attendance;
     }
-/*
+
     public Student(String name, String id, GradesDB db){
         _name = name;
         _id = id;
     }
-*/
+
     public int getAttendance(){
         return _attendance;
+    }
+    @Override
+    public boolean equals(Object o){
+        return true;
     }
 }

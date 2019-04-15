@@ -18,25 +18,10 @@ public class GradesDB {
 
 
     public GradesDB(String dbFilePath){
+        loadSpreadsheet(dbFilePath);
+    }
 
-        Workbook workbook;
-        try{
-            FileInputStream fis = new FileInputStream(dbFilePath);
-            workbook = new XSSFWorkbook(fis);
-        }catch(Exception e){
-            System.out.println(String.format("Failed to open workbook '%s'.", dbFilePath));
-            return;
-        }
-
-        try{
-            _assignments = readAssignmentsDb(workbook);
-            _projects = readProjectsDb(workbook);
-            _grades = readGradesDb(workbook);
-            _students = readStudentsDb(workbook);
-        }catch(Exception e){
-            System.out.println(String.format("Failed to read data from workbook '%s'.", dbFilePath));
-            return;
-        }
+    public GradesDB(){
 
     }
 
@@ -74,6 +59,28 @@ public class GradesDB {
                 return s;
         }
         return null;
+    }
+
+    public void loadSpreadsheet(String dbFilePath){
+        Workbook workbook;
+        try{
+            FileInputStream fis = new FileInputStream(dbFilePath);
+            workbook = new XSSFWorkbook(fis);
+        }catch(Exception e){
+            System.out.println(String.format("Failed to open workbook '%s'.", dbFilePath));
+            return;
+        }
+
+        try{
+            _assignments = readAssignmentsDb(workbook);
+            _projects = readProjectsDb(workbook);
+            _grades = readGradesDb(workbook);
+            _students = readStudentsDb(workbook);
+        }catch(Exception e){
+            System.out.println(String.format("Failed to read data from workbook '%s'.", dbFilePath));
+            return;
+        }
+
     }
 
     private List<Grade> readGradesDb(Workbook db){
