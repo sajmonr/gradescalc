@@ -11,4 +11,12 @@ public class Assignment {
         _title = title;
     }
 
+    @Override
+    public boolean equals(Object o){
+        return o instanceof Assignment && ((Assignment)o).getTitle() == _title;
+    }
+    @Override
+    public int hashCode(){
+        return _title.hashCode();
+    }
 }

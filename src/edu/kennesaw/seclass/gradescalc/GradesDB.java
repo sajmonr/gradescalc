@@ -15,6 +15,7 @@ public class GradesDB {
     private List<Project> _projects;
     private List<Grade> _grades;
     private HashSet<Student> _students;
+    private List<ProjectContribution> _individualContributions;
 
 
     public GradesDB(String dbFilePath){
@@ -35,16 +36,31 @@ public class GradesDB {
         return _projects.size();
     }
 
-    public void addAssignment(String assignmentName){
-        //!!!!!!!!THIS NEEDS TO BE IMPLEMENTED!!!!!!!!!!!
+    public void addAssignment(Assignment assignment){
+        if(!_assignments.contains(assignment))
+            _assignments.add(assignment);
     }
-    public void addGrade(){
-        //!!!!!!!!THIS NEEDS TO BE IMPLEMENTED!!!!!!!!!!!
-    }
+    public void addGrade(Grade grade){
+        Grade existingGrade = getGradeFor(grade.getStudentName(), grade.getAssignment().getTitle());
 
+        if(existingGrade != null)
+            existingGrade.setScore(grade.getScore());
+        else
+            _grades.add(grade);
+    }
+    public void addContributions(ProjectContribution contribution){
+        ProjectContribution existingContribution = getContributionFor(contribution.getStudentName(), contribution.getProjectName());
+
+        if(existingContribution != null)
+            existingContribution.setContribution(contribution.getContribution());
+        else
+            _individualContributions.add(contribution);
+    }
     public HashSet<Student> getStudents(){
         return _students;
     }
+    public List<Assignment> getAssignments(){ return _assignments;}
+    public List<Project> getProjects(){ return _projects; }
     public Student getStudentByName(String name){
         for(Student s : _students){
             if(s.getName().equals(name))
@@ -60,7 +76,36 @@ public class GradesDB {
         }
         return null;
     }
-
+    public Project getProjectByTitle(String title){
+        for(Project p : _projects){
+            if(p.getTitle().equals(title))
+                return p;
+        }
+        return null;
+    }
+    public Assignment getAssignmentByTitle(String title){
+        for(Assignment a : _assignments){
+            if(a.getTitle().equals(title))
+                return a;
+        }
+        return null;
+    }
+    public Grade getGradeFor(String studentName, String assignmentTitle){
+        for(Grade grade : _grades){
+            if(grade.getAssignment().getTitle().equals(assignmentTitle) &&
+                    grade.getStudentName().equals(studentName))
+                return grade;
+        }
+        return null;
+    }
+    public ProjectContribution getContributionFor(String studentName, String projectName){
+        for(ProjectContribution pc : _individualContributions){
+            if(pc.getProjectName().equals(projectName) &&
+                pc.getStudentName().equals(studentName))
+                return pc;
+        }
+        return null;
+    }
     public void loadSpreadsheet(String dbFilePath){
         Workbook workbook;
         try{
@@ -76,6 +121,7 @@ public class GradesDB {
             _projects = readProjectsDb(workbook);
             _grades = readGradesDb(workbook);
             _students = readStudentsDb(workbook);
+            _individualContributions = readIndividualContributions(workbook);
         }catch(Exception e){
             System.out.println(String.format("Failed to read data from workbook '%s'.", dbFilePath));
             return;
@@ -106,12 +152,14 @@ public class GradesDB {
 
         return grades;
     }
-
     private HashMap<String, Integer> getAssignmentIndexes(Row row){
+        return getAssignmentIndexes(row, 0);
+    }
+    private HashMap<String, Integer> getAssignmentIndexes(Row row, int skip){
         HashMap<String, Integer> indexes = new HashMap<>();
 
         String assignmentName;
-        int currentCellIndex = 0;
+        int currentCellIndex = skip;
         Cell currentCell = row.getCell(currentCellIndex);
 
         while(currentCell != null){
@@ -123,7 +171,35 @@ public class GradesDB {
 
         return indexes;
     }
+    private List<ProjectContribution> readIndividualContributions(Workbook db){
+        List<ProjectContribution> contributions = new ArrayList<>();
 
+        Sheet gradesSheet = db.getSheet("IndividualContribs");
+        Iterator<Row> rowIterator = gradesSheet.iterator();
+
+        HashMap<String, Integer> assignmentIndexes = getAssignmentIndexes(rowIterator.next(), 1);
+        Cell nextCell;
+
+        while(rowIterator.hasNext()){
+            Row row = rowIterator.next();
+            nextCell = row.getCell(0);
+
+            if(nextCell == null) break;
+
+            String name = nextCell.getStringCellValue();
+
+            for(Project project : _projects){
+                if(assignmentIndexes.containsKey(project.getTitle())){
+                    Cell cell = row.getCell(assignmentIndexes.get(project.getTitle()));
+                    int score = cell != null ? (int)cell.getNumericCellValue() : 0;
+                    contributions.add(new ProjectContribution(project.getTitle(), name, score));
+                }
+            }
+
+        }
+
+        return contributions;
+    }
     private List<Assignment> readAssignmentsDb(Workbook db){
         List<Assignment> assignments = new ArrayList<>();
 
@@ -184,7 +260,6 @@ public class GradesDB {
 
         return students;
     }
-
     private int readStudentAttendance(Workbook db, String studentName){
         Sheet attendanceSheet = db.getSheet("Attendance");
         Iterator<Row> rowIterator = attendanceSheet.iterator();
@@ -199,5 +274,4 @@ public class GradesDB {
         }
         return 0;
     }
-
 }

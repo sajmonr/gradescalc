@@ -55,6 +55,15 @@ public class Student {
     }
     @Override
     public boolean equals(Object o){
-        return true;
+        if(o instanceof Student){
+            Student s = (Student)o;
+
+            return _name.equals(s.getName());
+        }
+        return false;
+    }
+    @Override
+    public int hashCode(){
+        return _id.hashCode();
     }
 }

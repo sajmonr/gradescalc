@@ -1,16 +1,9 @@
 package edu.kennesaw.seclass.gradescalc;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.junit.After;
@@ -27,10 +20,6 @@ public class GradesDBTest {
 
     @Before
     public void setUp() throws Exception {
-        FileSystem fs = FileSystems.getDefault();
-        Path dbfilegolden = fs.getPath(GRADES_DB_GOLDEN);
-        Path dbfile = fs.getPath(GRADES_DB);
-        //Files.copy(dbfilegolden, dbfile, REPLACE_EXISTING);
         db = new GradesDB();
         db.loadSpreadsheet(GRADES_DB_GOLDEN);
     }
@@ -70,9 +59,7 @@ public class GradesDBTest {
     public void testGetStudents2() {
         HashSet<Student> students = null;
         students = db.getStudents();
-        Student s = db.getStudentByName("Cynthia Faast");
-        assertNotNull(s);
-        //assertTrue(students.contains(new Student("Cynthia Faast", "1234514", db)));
+        assertTrue(students.contains(new Student("Cynthia Faast", "1234514", db)));
     }
 
     @Test
@@ -97,4 +84,41 @@ public class GradesDBTest {
 
     // Don't change above this point
 
+    //Start custom test cases
+    @Test
+    public void testAddGrade(){
+        String studentName = "Freddie Catlay";
+        Assignment assignment = db.getAssignments().get(0);
+        int score = 53;
+
+        Grade newGrade = new Grade(studentName, assignment, score);
+
+        db.addGrade(newGrade);
+
+        assertEquals(score, db.getGradeFor(studentName, assignment.getTitle()).getScore());
+    }
+
+    @Test
+    public void testAddAssignment(){
+        Assignment assignment = new Assignment("Test assignment");
+
+        db.addAssignment(assignment);
+
+        assertEquals(assignment, db.getAssignmentByTitle(assignment.getTitle()));
+    }
+
+    @Test
+    public void testAddContribution(){
+        String studentName = "Freddie Catlay";
+        String projectName = "PROJECT 2";
+        int score = 44;
+
+        ProjectContribution pc = new ProjectContribution(projectName, studentName, score);
+
+        db.addContributions(pc);
+
+        assertEquals(score, db.getContributionFor(studentName, projectName).getContribution());
+    }
+    //End custom test cases
 }
+
