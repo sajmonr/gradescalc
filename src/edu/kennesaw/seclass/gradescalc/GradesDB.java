@@ -21,10 +21,20 @@ public class GradesDB {
     public GradesDB(String dbFilePath){
         loadSpreadsheet(dbFilePath);
     }
-
-    public GradesDB(){
+    public GradesDB(){}
+    //Not implemented code below
+    public void addStudents(Student s){
 
     }
+    public void addProject(Project p){
+
+    }
+    public int getNumGrades(){
+        return 0;
+    }
+    //End not implemented code
+
+
 
     public int getNumStudents(){
         return _students.size();

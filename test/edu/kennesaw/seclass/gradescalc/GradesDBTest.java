@@ -119,6 +119,32 @@ public class GradesDBTest {
 
         assertEquals(score, db.getContributionFor(studentName, projectName).getContribution());
     }
+
+    //Begin functions that are not implemented
+    //These methods will always fail as they are not implemented
+    @ Test
+    public  void testAddStudents () {
+        Student student1 = new Student("Tom Grey", "1234502", db);
+        db.addStudents(student1);
+        assertEquals(16, db.getNumStudents());
+    }
+    @ Test
+    public  void testAddProject () {
+        Project project = new Project(" project 4");
+        db.addProject(project);
+        assertEquals(5, db.getNumProjects());
+    }
+    @ Test
+    public  void testAddGrade1() {
+        //Get the first assignment
+        Assignment assignment = db.getAssignments().get(0);
+        Grade grade1 = new Grade("Tom Grey",assignment, 87);
+        db.addGrade(grade1);
+        assertEquals(16, db.getNumGrades());
+    }
+
+    //End functions that are not implemented
+
     //End custom test cases
 }
 
